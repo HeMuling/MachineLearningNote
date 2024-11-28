@@ -20,7 +20,7 @@
 
 #let hd1(in_text) = {
   text(size: 18pt)[
-    #align(center)[
+    #align(horizon)[
     #heading(level: 1)[#in_text]
     #v(10pt)
     ]
@@ -91,6 +91,8 @@
 )
 #set math.mat(delim: "[", )
 
+#pagebreak()
+#hd1("机器学习基础")
 #pagebreak()
 
 #hd2("基础知识")
@@ -1308,6 +1310,9 @@ $bold(A) bold(x)=bold(b)$ 的迭代方法，其中 $bold(A)$ 是一个对称正�
 3. 重复步骤2，直到满足收敛条件
 
 #hd3("Natural Gradient")
+
+#pagebreak()
+#hd1("机器学习论文")
 
 #pagebreak()
 #hd2("聚类")
