@@ -1308,7 +1308,7 @@ $
 
 但是用JS divergence来作为度量有个致命缺陷，就是在两个分布互不相交的情况下，两个分布的JS divergence永远都是常数 $log 2$，并且由于generator生成的分布和target分布的支撑集是在嵌在高维空间中的低维流形，所以他们重叠的部分的测度几乎为0。这样完全无法进行度量两个分布在不相交情况下的距离。计算梯度的时候也会出现0梯度的情况。@ymhuang2024
 
-因此我们需要采用新的度量方式，这就是optimal transport。optimal transport是一个线性规划问题，它的目标是找到两个分布之间的最小运输成本。假设从 $x$ 运输到 $y$ 具有一定的成本 $c$，一般来说，定义为：
+因此我们需要采用新的度量方式，这就是optimal transport. Optimal transport是一个线性规划问题，它的目标是找到两个分布之间的最小运输成本。假设从 $x$ 运输到 $y$ 具有一定的成本 $c$，一般来说，定义为：
 $
   c(x,y) = ||x-y||_k^k
 $
@@ -1354,6 +1354,55 @@ $
       theta^(t+1) = theta^t - alpha nabla_theta cal(L)(theta^t, phi^(t+1))
    $
 3. 重复1,2直至收敛
+
+#hd3("Normalizing Flows")
+
+与VAE类似，normalizing flows 假设潜变量 $z$，并可以根据数据 $x$ 得到潜变量，即：
+$
+  z = f_theta (x)
+$
+与VAE不同的是，normalizing flows 不使用 decoder 从 $z$ 获得 $x$，而是期望找到 $f^(-1)_theta (dot)$ 使得：
+$
+  x = f^(-1)_theta (z)
+$
+根据变量转换公式，我们有：
+$
+  p(x) &= p(z) abs(det (d f^(-1)_theta (z))/(d z))\
+  &= p(f(x)) abs(det (d f_theta (x))/(d x)) 
+$ <nf-change>
+此时需要保证 $z$ 和 $x$ 的维度相同。同时，还需要保证 $f_theta (dot)$ 是可逆的，因此设计如下灵活且可解决的双射函数作为 coupling layer. 假设 $x in bb(R)^D$ 且 $d < D$，有：
+$
+  y_(1:d) &= x_(1:d)\
+  y_(d+1:D) &= x_(d+1:D) dot.circle exp(s(x_(1:d))) + t(x_(1:d))
+$ <nf-forward>
+#figure(
+  image("asset/NormalizingFlowsCP.png", width: 80%)
+)
+可以很容易得到其逆变换：
+$
+  x_(1:d) &= y_(1:d)\
+  x_(d+1:D) &= (y_(d+1:D) - t(y_(1:d))) dot.circle exp(-s(y_(1:d)))
+$
+其中 $s,t: bb(R)^d arrow.bar bb(R)^(D-d)$. 这样，Jacobian 矩阵为：
+$
+  (partial y)/(partial x^tack.b) = mat(
+    I_d, 0;
+    (partial y_(d+1:D))/(partial x^tack.b_(1:d)), "diag"(exp[s(x_(1:d))])\
+  )
+$
+代入 @nf-change，我们有：
+$
+  abs(det (d f_theta (x))/(d x)) = exp(sum_j s(x_(1:d))_j)
+$
+注意到，在 @nf-forward 中，$y_(1:d) = x_(1:d)$ 并没有经过变换，我们可以结合多个不同的 coupling layer 来解决这个问题，对于在一个 coupling layer 上未经变换的部分，我们让其在下一个 coupling layer 进行变换。即：
+$
+  f_theta (x) = f^N circle.small dots.h.c circle.small f^1 (x)
+$
+因此，根据MLE：
+$
+  log p_theta (x) &= log p(f_theta (x)) + log abs(det (partial f_theta (x))/ (partial x^tack.b))\
+  &= log p(f_theta (x)) + sum_i^N log abs(det (partial f^i)/ (partial f^(i-1)))
+$
 
 #pagebreak()
 #hd2("优化算法")
