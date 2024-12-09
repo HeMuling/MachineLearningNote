@@ -719,6 +719,96 @@ $
 2. 先验 $P_0$ 的方差：高方差的先验 $P_0$ 表示对聚类位置的不确定性，阻碍新聚类的形成。
 
 #pagebreak()
+#hd3("Bayesian optimization")
+
+有些时候，我们不仅需要根据数据预计结果，还期望获得预计结果的不确定性。
+
+在回归中，我们的目标是基于来自未知函数的观察数据点对函数进行建模。传统的非线性回归方法通常给出一个被认为最适合数据集的单一函数。然而，可能存在多个函数同样适合观察到的数据点。我们观察到，当多元正态分布的维度为无限时，我们可以使用这些无限数量的函数在任何点进行预测。当我们开始有观察数据时，我们不再保留无限数量的函数，而只保留适合观察数据的函数，形成后验分布。
+当我们有新的观察数据时，我们将当前的后验作为先验，并使用新的观察数据点来获得一个新的后验。@wang2023intuitive
+
+#hd4("Gaussian process")
+
+Gaussian distribution 具有良好的性质，对于多元高斯分布，其联合分布、条件分布、边缘分布都是高斯分布。例如，假设多元高斯分布：
+$
+  p(f_1, f_2) tilde cal(N)(f_1,f_2|mu, Sigma)
+$
+则：
+$
+  mat(delim: "(", f_1;f_2) tilde cal(N)(mat(mu_1;mu_2), mat(Sigma_(11), Sigma_(12);Sigma_(21),Sigma_(22)))\
+  p(f_1) tilde cal(N)(f_1|mu_1, Sigma_(11))\
+  p(f_1|f_2) tilde cal(N)(f_1|mu_1+Sigma_(12)Sigma_(22)^(-1)(f_2-mu_2), Sigma_(11)-Sigma_(12)Sigma_(22)^(-1)Sigma_(21))
+$ <multivariate-g>
+
+Gaussian process (GP) 假设我们观测的样本来自一个连续随机过程。对于每一个观测的样本与其对应的输出，我们假设输入 $X = {x}_(i=1)^m, x_i in bb(R)^d$，对应观测值 $f = {f}_(i=1)^m$，且满足：
+$
+  p(f|X) = cal(N)(mu, K)
+$
+其中 $f_i$ 为随机函数，其值为 $f(x_i)$，是我们观察到的、来自随机过程的值。$mu$ 为均值函数，$K$ 为协方差函数，因此还有：
+$
+  mu = {mu_i} = {mu(x_i)}
+$
+对于协方差函数 $K$，其本质是量化两个点之间距离的函数，例如核函数中的高斯核。在GP过程中有多种选择，例如：
+$
+  K &= {K_(i,j)} = {K(x_i, x_j)}\
+  &= 2/pi sin^(-1)(2 (x_i^tack.b Sigma x_j)/(sqrt((1+2 x_i^tack.b Sigma x_i)(1+2 x_j^tack.b Sigma x_j))))
+$
+初次以外，协方差函数 $K$ 还可以组合使用：
+- 相加：$K(x, x') = K_1(x, x') + K_2(x,x')$
+- 相乘：$K(x, x') = K_1(x, x') dot K_2(x,x')$
+- 卷积：$K(x, x') = integral K_1(x, z)K_2(z,x') d z$
+此时，记作：
+#let GP = $cal(G P)$
+$
+  f(x) tilde GP(dot|mu(x), K(x,x'))
+$
+
+#hd4("GP Regression")
+
+假设观测到数据点 $S_m = {X, y } = {(x_i, y_i)}_(i=1)^m$，$y$ 为噪音观测值：
+$
+  y_i = f(x_i) + epsilon_i
+$
+其中 $f(dot) tilde GP(dot|0,K)$ 为我们希望拟合的随机过程函数，$epsilon tilde cal(N)(0,sigma^2)$ 为高斯噪声。因此，先验为：
+$
+  p(f) tilde cal(N)(0,K)
+$
+根据我们的假设，$y$ 服从多元正态分布：
+$
+  p(y) tilde cal(N)(0, K + sigma^2 I)
+$
+因此，似然函数为：
+$
+  p(y|f) = cal(N)(y|f, sigma^2 I)
+$
+假设测试输入值 $x_*$，我们希望预测其输出值 $y_*$，则：
+$
+  y_* = f_* + epsilon_*, space.quad f_* = f(x_*)
+$
+我们需要根据观测的 $y$ 获得估计的 $f_*$，因此考虑此时联合分布，根据 @multivariate-g：
+$
+  p(y, f_*) tilde cal(N)(mat(0;0), mat(K+sigma^2 I, K_*; K_*^tack.b, K_(**)))
+$
+其中 $K_* = {K(x_*, x)}_(i=1)^m, K_(**) = K(x_*, x_*)$. 同理，根据 @multivariate-g，我们可以得到 $f_*$ 的条件分布，这就是我们的 GP Regression：
+$
+  p(f_*|y) = cal(N)(f_*|mu_*, Sigma_*)\
+  mu_* = K_*^tack.b (K+sigma^2 I)^(-1)y, space Sigma_* = K_(**) - K_*^tack.b (K+sigma^2 I)^(-1)K_*
+$
+其中对于 $mu_*$，有 $K_* in bb(R)^m, (K+sigma^2 I)^(-1) in bb(R)^(m times m), y in bb(R)^m$，因此 $mu_* in bb(R)$. 同理，$Sigma_* in bb(R)$. 因此，$mu_*$ 可改写为：
+$
+  mu_* = sum_(i=1)^m alpha_i K(x_*, x_i), space.quad alpha = (K+sigma^2 I)^(-1)y
+$
+GP Regression 的超参数在于协方差函数 $K$ 的选择，以及噪声方差 $sigma^2$ 的选择。通常我们可以通过最大化似然函数来估计这些参数。考虑：
+$
+  p(y) = cal(N)(0, K+sigma^2 I_m)
+$
+对数似然函数为：
+$
+  cal(L) &= log p(y) = -1/2 y^tack.b (K+sigma^2 I_m)^(-1)y - 1/2 log det(K+sigma^2 I_m) - m/2 log 2pi\
+  &= p(y|theta) = -1/2 y^tack.b C^(-1)(theta) y - 1/2 log det(C(theta)) - m/2 log 2pi
+$
+其中 $C(theta) = K+sigma^2 I_m$
+
+#pagebreak()
 #hd2("Latent variable model")
 
 #hd3("Laten variable model")
@@ -1104,6 +1194,7 @@ def decode(self, z):
     return torch.sigmoid(self.fc4(h3))  # 输出范围 [0,1]
 ```
 
+#pagebreak()
 #hd3("Discrete Latent Variables")
 
 #hd4("Reinforce estimator")
@@ -1254,6 +1345,7 @@ $
   $
 除此以外，还有其他不同的方法，如 @maddison2016concrete, @tucker2017rebar, etc.
 
+#pagebreak()
 #hd3("GAN")
 
 #hd4("GAN")
@@ -1355,9 +1447,9 @@ $
    $
 3. 重复1,2直至收敛
 
+#pagebreak()
 #hd3("Normalizing Flows")
-
-与VAE类似，normalizing flows 假设潜变量 $z$，并可以根据数据 $x$ 得到潜变量，即：
+来源与论文@dinh2016density，与VAE类似，normalizing flows 假设潜变量 $z$，并可以根据数据 $x$ 得到潜变量，即：
 $
   z = f_theta (x)
 $
