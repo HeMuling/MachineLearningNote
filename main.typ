@@ -2,6 +2,7 @@
 #import "@preview/showybox:2.0.1": showybox
 #import "@preview/lovelace:0.3.0": *
 #import "@preview/codly:1.0.0": *
+#import "@preview/in-dexter:0.7.0": *
 
 #set text(lang: "cn")
 
@@ -97,9 +98,9 @@
 
 #hd2("基础知识")
 
-#hd3("NFL定理")
+#hd3("NFL定理")#index([NFL Theorem])
 
-#h(2em) 归纳偏好用于描述当特征相同时，哪些特征更为重要
+归纳偏好用于描述当特征相同时，哪些特征更为重要
 
 假设样本空间 $cal(X)$ 和假设空间 $cal(H)$ 为离散。令 $P(h|X, xi_a)$ 代表算法 $xi_a$ 基于训练数据 $X$ 产生假设 $h$ 的概率；令 $f$ 代表希望学习的目标函数。因此，算法在训练集外产生的误差为：
 
@@ -130,7 +131,7 @@ $
 这告诉我们，在某一任务上表现好的算法在另一任务上表现不一定好。
 
 #pagebreak()
-#hd3("Monte-Carlo estimation")
+#hd3("Monte-Carlo estimation") #index([Monte-Carlo estimation])
 
 Monte-Carlo estimation可以用于估计复杂积分，假设 $f: bb(R)^d arrow bb(R)$，以及一个定义在 $cal(D) in bb(R)^d$ 上的pdf $p: bb(R)^d arrow bb(R)$，期望计算积分：
 $
@@ -172,7 +173,7 @@ $
 $
 Y_(i,j) = (X * W)_(i,j) = sum_(m=0)^(M-1) sum_(n=0)^(N-1) X_(i+m, j+n) W_(m,n)
 $
-卷积操作包括Conv1d和Conv2d
+卷积操作包括Conv1d和Conv2d#index("Convolution","Convolution layer")
 
 Conv1d: 通常对于一维特征图，给定输入 $X in bb(R)^(N times L times C_text("in"))$，filter $W in bb(R)^(K times C_text("in") times C_text("out"))$，卷积操作为：
 $
@@ -185,7 +186,7 @@ $
 $
 其中，$Y in bb(R)^(N times H_text("out") times W_text("out") times C_text("out"))$，$h, w$ 为空间位置索引，$o$ 为输出通道索引
 
-池化层类型包括：最大池化、平均池化。
+池化层类型包括：最大池化、平均池化。#index("Convolution","Pooling Layer")
 $
   A_(i, j) = max_(m,n) (a, Y_i,j)\
   A_(i, j) = 1/(M*N) sum_(m=0)^(M-1) sum_(n=0)^(N-1) Y_(i+m, j+n)
@@ -199,7 +200,7 @@ pool = nn.MaxPool2d(kernel_size, stride)
 pool = nn.AvgPool2d(kernel_size, stride)
 ```
 
-#hd4("Depthwise Separable Convolution")
+#hd4("Depthwise Separable Convolution") #index("Convolution","Depthwise Separable Convolution")
 
 Depthwise Separable Convolution @howard2017mobilenets 是一种轻量级卷积操作，其包括两个步骤：Depthwise Convolution 和 Pointwise Convolution.
 
@@ -223,7 +224,7 @@ pointwise = nn.Conv2d(in_channels, out_channels, kernel_size=1)
 deepwise_separable = pointwise(depthwise(input))
 ```
 
-#hd3("State-Space model")
+#hd3("State-Space model") #index("State-Space model")
 
 State-Space model (SSM) 是用于描述时间序列数据的模型。对于任意时间序列输入 $u(t)$，SSM首先将其映射到 hidden space $x(t)$，然后进一步映射为输出空间 $y(t)$：
 $
@@ -240,7 +241,7 @@ $
 $ <SSM-soultion>
 其中，$delta(t-n)$ 为Kronecker delta函数。
 
-#hd3("Fourier Transform")
+#hd3("Fourier Transform") #index("Fourier Transform")
 
 #hd4("思想")
 
@@ -317,7 +318,7 @@ $
   W^(-1) dot W = I
 $
 
-#hd4("卷积和卷积定理")
+#hd4("卷积和卷积定理") #index("Fourier Transform","Convolution Theorem")
 时域上的卷积等价于频域上的乘积，若 $cal(F)[f(t)] = f(omega), cal(F)[g(t)] = g(omega)$，则：
 $
   cal(F)[f(t) * g(t)] = F(omega) G(omega)\
@@ -391,7 +392,7 @@ $ <BaysianBasic2>
 
 #hd4("Conjugate distribution")
 
-在贝叶斯模型中， @BaysianBasic1 和 @BaysianBasic2 都存在积分计算，在大部分情况下是难以直接获得数值解的。但共轭分布（Conjugate distribution）可以简化这种计算。
+在贝叶斯模型中， @BaysianBasic1 和 @BaysianBasic2 都存在积分计算，在大部分情况下是难以直接获得数值解的。但共轭分布（Conjugate distribution）可以简化这种计算。#index("Conjugate Distribution")
 
 共轭分布是指：对于先验分布 $p(theta)$ 、似然函数 $p(X|theta)$和后验分布 $p(theta|X)$，若先验分布和后验分布属于同一分布族（distribution family），则称 $p(theta)$ 和 $p(X|theta)$ 为共轭分布。即：
 $
@@ -431,7 +432,7 @@ $
 
 共轭分布通常只适用于简单概率模型。
 
-#hd4("Maximum posterior estimation")
+#hd4("Maximum a posterior estimation") #index("Maximum a Posterior Estimation")
 
 当共轭分布不可用时，一种简单的方法是使用最大后验估计（maximum a posteriori probability estimate, MAP）.其思想是将分布估计转变为点估计，将参数取为后验分布的最大值，即：
 $
@@ -456,7 +457,7 @@ $
 q(theta) &= arg min_(q in cal(Q)) F(q) := K L(q(theta)||p(theta|X))
 $
 
-其中，KL-divergence为：
+其中，KL-divergence为： #index("Divergence Mesure", "KL-divergence")
 $
 K L(q(theta)||p(theta|X)) = integral q(theta) log(q(theta)/p(theta|X)) d theta
 $
@@ -489,7 +490,7 @@ log p(X) &= integral q(theta) log(p(X)) d theta = integral q(theta) log p(X,thet
 &= cal(L)(q(theta)) + K L(q(theta)||p(theta|X))
 $ <BaysianVariation1>
 
-其中，$cal(L)(q(theta))$ 为证据下界（Evidence lower bound, ELBO），即：
+其中，$cal(L)(q(theta))$ 为证据下界（Evidence lower bound, ELBO），即： #index("Evidence Lower Bound")
 $
 log p(X) >= cal(L)(q(theta))
 $
@@ -517,7 +518,7 @@ $
 
 #hd4("Mean field approximation")
 
-对于 $q(theta)$ 的选择，我们可以使用均场近似（mean field approximation）来简化问题。均场近似假设 $q(theta)$ 可以分解为一系列独立的分布，即：
+对于 $q(theta)$ 的选择，我们可以使用均场近似（mean field approximation）来简化问题。均场近似假设 $q(theta)$ 可以分解为一系列独立的分布，即：  #index("Mean Field Approximation")
 $
 q(theta) = product_(i=1)^(m) q_i (theta_i)
 $
@@ -594,11 +595,13 @@ $
 #pagebreak()
 #hd3("Dirichlet process mixture model")
 
-#hd4("Dirichlet process")
+#hd4("Dirichlet process") #index("Dirichlet Process")
 
 Dirichlet process 是一种用于非参数贝叶斯统计的随机过程，可以创建无限个连续分布 $H$ 的离散副本，即 $H arrow.bar G$. 记作 $G tilde D P(alpha, H)$，其中 $alpha$ 为浓度参数，决定了聚类的程度。浓度参数越大，生成的簇的数量通常越多。
 
 Dirichlet process 可以由 stick-breaking process 来描述。假设我们有一个长度为1的棍子，我们从棍子的一端开始，每次从棍子的长度中折断一部分，折断的长度服从beta分布，折断的位置服从beta分布。这样我们可以得到一个无限个分布的序列：
+
+#index("Stick-breaking Process")
 
 1. 生成一个无限长序列 $V_k tilde text("Beta")(1, alpha) in (0,1)$
 2. 生成一个无限长序列权重 $pi_k$:
@@ -622,7 +625,7 @@ alpha arrow infinity arrow.double D P(alpha, H) = H
 $
 3. 序列为无限长，无法完全在计算机中表达
 
-#hd4("Mixture model")
+#hd4("Mixture model") #index("Mixture Model")
 
 混合模型（Mixture Model）是一种统计模型，它假设数据来自多个不同的分布，每个分布被称为一个“成分”（component）。混合模型的主旨在于通过这些成分的组合来更好地描述数据的总体分布。每个成分可以用不同的概率分布函数来定义，如高斯分布、伯努利分布等。
 
@@ -644,7 +647,7 @@ f(y|P) = integral cal(K)(y|theta) d P(theta)
 $ <DPMM1>
 其中，$cal(K)(dot|theta)$ 为核函数，以 $theta$ 作为其参数，可能包括每个核的中心位置、宽度等；$P$ 是混合测度。
 
-#showybox[
+#showybox[  #index("Measure")
   测度（measure）：测度是一个函数，它将集合映射到实数。常见的测度包括：长度、面积、概率测度等。假设样本空间 $Omega$，一个概率测度 $P$ 满足以下条件：
   - $P(A) >= 0, forall A in Omega$
   - $P(Omega) = 1$
@@ -719,14 +722,59 @@ $
 2. 先验 $P_0$ 的方差：高方差的先验 $P_0$ 表示对聚类位置的不确定性，阻碍新聚类的形成。
 
 #pagebreak()
-#hd3("Bayesian optimization")
+#hd3("Deep Gaussian Process")
 
-有些时候，我们不仅需要根据数据预计结果，还期望获得预计结果的不确定性。
+#hd4("Bayesian Regression")
 
-在回归中，我们的目标是基于来自未知函数的观察数据点对函数进行建模。传统的非线性回归方法通常给出一个被认为最适合数据集的单一函数。然而，可能存在多个函数同样适合观察到的数据点。我们观察到，当多元正态分布的维度为无限时，我们可以使用这些无限数量的函数在任何点进行预测。当我们开始有观察数据时，我们不再保留无限数量的函数，而只保留适合观察数据的函数，形成后验分布。
-当我们有新的观察数据时，我们将当前的后验作为先验，并使用新的观察数据点来获得一个新的后验。@wang2023intuitive
+普通线性归回模型中，我们假设数据集 $cal(D) = {x_i, y_i}_(i=1)^N, x_i in bb(R)^d$ 的 $x_i$ 与 $y_i$ 存在线性关系，即： #index("Linear Regression")
+$
+  y = w^tack.b x + epsilon
+$
+其中 $w in bb(R)^d$ 为权重，$epsilon$ 为噪声，通常假设 $epsilon tilde cal(N)(0, sigma^2)$. 因此：
+$
+  p(y|w, X, sigma^2) = cal(N)(y|X w, sigma^2 I)
+$ <linear-regression-model>
 
-#hd4("Gaussian process")
+@linear-regression-model 这种模型的缺点在于缺少对于非线性关系的拟合能力，因此，我们可以引入基函数 $phi(x)$，将输入特征映射到更高维的空间：
+$
+  phi(x) = mat(phi_1 (x), phi_2 (x), dots.c, phi_M (x))
+$
+其中，$phi_i (dot)$ 通常为非线性函数，例如径向基函数等。此时，我们的模型变为：
+$
+  y = w^tack.b phi(x) + epsilon
+$
+因此：
+$
+  p(y|w, X, sigma^2) = cal(N)(y|Phi w, sigma^2 I)
+$ <nonlinear-regression-model>  #index("Nonlinear Regression")
+其中：
+$
+  Phi := Phi(x) = mat(
+    phi_1 (x_1), dots.c, phi_M (x_1);
+    dots.v, dots.down, dots.v;
+    phi_1 (x_N), dots.c, phi_M (x_N)
+  )
+$
+@nonlinear-regression-model 这种模型的缺点在于没有对权重的不确定性进行建模。而对权重的不确定性进行建模，引出了贝叶斯回归（Bayesian Regression）模型。我们给予权重一个先验分布：
+$
+  w tilde cal(N)(0, S)
+$
+其中，$w in bb(R)^M$，$S in bb(R)^(M times M)$ 为协方差矩阵。此时，$Phi w$ 的分布为：
+$
+  p(Phi w) &= cal(N)(bb(E)[Phi w], "Cov"(Phi w))\
+  &= cal(N)(0, Phi S Phi^tack.b) = cal(N) (0, K)
+$ <bayesian-phi-w>
+其中 $Phi in bb(R)^(N times M), K = Phi S Phi^tack.b$ 为协方差矩阵。因此，我们可以得到权重的后验分布：
+$
+  p(w|X, y) = cal(N)(w|mu_w, Sigma_w)\
+  Sigma_w = (sigma^(-2) Phi^tack.b Phi + S^(-1))^(-1), space.quad mu_w = sigma^(-2) Sigma_N Phi^tack.b y
+$ <bayesian-nonlinear-regression> #index("Bayesian Nonlinear Regression")
+
+@bayesian-nonlinear-regression 这种模型的缺点在于需要手动选择基函数的类型与基函数的数量，数量较少会导致无法充分捕捉数据的非线性特征，而基函数数量过多则容易导致过拟合，并增加计算复杂度。
+
+但是，我们观察到 @bayesian-phi-w 中 $K = Phi S Phi^tack.b$ 等价于 $K(dot, dot)$ 的内积计算方式，因此我们可以引入一个函数 $K(dot, dot)$ 来代替显式构造 $phi(x)$，这就是高斯过程以及高斯过程回归的思想。
+
+#hd4("Gaussian Process")
 
 Gaussian distribution 具有良好的性质，对于多元高斯分布，其联合分布、条件分布、边缘分布都是高斯分布。例如，假设多元高斯分布：
 $
@@ -737,17 +785,17 @@ $
   mat(delim: "(", f_1;f_2) tilde cal(N)(mat(mu_1;mu_2), mat(Sigma_(11), Sigma_(12);Sigma_(21),Sigma_(22)))\
   p(f_1) tilde cal(N)(f_1|mu_1, Sigma_(11))\
   p(f_1|f_2) tilde cal(N)(f_1|mu_1+Sigma_(12)Sigma_(22)^(-1)(f_2-mu_2), Sigma_(11)-Sigma_(12)Sigma_(22)^(-1)Sigma_(21))
-$ <multivariate-g>
+$ <multivariate-g>  #index("Multivariate Gaussian")
 
 Gaussian process (GP) 假设我们观测的样本来自一个连续随机过程。对于每一个观测的样本与其对应的输出，我们假设输入 $X = {x}_(i=1)^m, x_i in bb(R)^d$，对应观测值 $f = {f}_(i=1)^m$，且满足：
 $
   p(f|X) = cal(N)(mu, K)
-$
+$ #index("Gaussian Process")
 其中 $f_i$ 为随机函数，其值为 $f(x_i)$，是我们观察到的、来自随机过程的值。$mu$ 为均值函数，$K$ 为协方差函数，因此还有：
 $
   mu = {mu_i} = {mu(x_i)}
 $
-对于协方差函数 $K$，其本质是量化两个点之间距离的函数，例如核函数中的高斯核。在GP过程中有多种选择，例如：
+对于协方差函数 $K$，其本质是量化两个点之间距离的函数，例如核函数中的高斯核。在GP过程中有多种选择，例如：  #index("Covariance Function")
 $
   K &= {K_(i,j)} = {K(x_i, x_j)}\
   &= 2/pi sin^(-1)(2 (x_i^tack.b Sigma x_j)/(sqrt((1+2 x_i^tack.b Sigma x_i)(1+2 x_j^tack.b Sigma x_j))))
@@ -792,7 +840,7 @@ $
 $
   p(f_*|y) = cal(N)(f_*|mu_*, Sigma_*)\
   mu_* = K_*^tack.b (K+sigma^2 I)^(-1)y, space Sigma_* = K_(**) - K_*^tack.b (K+sigma^2 I)^(-1)K_*
-$
+$ #index("Gaussian Process Regression")
 其中对于 $mu_*$，有 $K_* in bb(R)^m, (K+sigma^2 I)^(-1) in bb(R)^(m times m), y in bb(R)^m$，因此 $mu_* in bb(R)$. 同理，$Sigma_* in bb(R)$. 因此，$mu_*$ 可改写为：
 $
   mu_* = sum_(i=1)^m alpha_i K(x_*, x_i), space.quad alpha = (K+sigma^2 I)^(-1)y
@@ -808,7 +856,41 @@ $
 $
 其中 $C(theta) = K+sigma^2 I_m$
 
-#hd4("Bayesian Optimization")
+但使用GP同样会有以下问题：
+1. 需要选择合适的协方差函数 $K$
+2. 协方差矩阵 $K in bb(R)^(m times m)$，其中 $m$ 是数据集大小，且需要计算其逆矩阵，计算复杂度为 $O(m^3)$. 因此，协方差矩阵的空间复杂度与时间复杂度都很高
+3. 计算 $p(y|theta)$ 时，需要保证高斯分布与噪声的分布为共轭，否则无法直接计算
+
+#hd4("Deep Gaussian Process") #index("Deep Gaussian Process")
+
+DGP 是一种多层次的高斯过程，可以用于建模复杂的非线性关系。DGP 由多个 GP 组成，每个 GP 代表一个层次。每个 GP 的输出作为下一层的输入，因此 DGP 可以看作是多个 GP 的堆叠。
+
+对于观测数据 $cal(D) = {(x_i, y_i)}_(i=1)^N$，假设 $L$ 层的DGP，则第 $l, l=1,dots,L$ 层为：
+$
+  f^((l))|f^((l-1)) &= GP(mu^((l))(f^((l-1))), K^((l))(f^((l-1)), f^((l-1))))\
+  &= GP(dot|f^((l-1)), theta^((l)))
+$
+而 $f^((0)) = X$，输出时：
+$
+  y = f^((L)) + epsilon, space.quad epsilon tilde cal(N)(0, sigma^2 I)
+$
+观测数据的边际似然为：
+$
+  p(Y|X, theta) = integral p(Y|F, theta) p(F|X, theta) d F\
+  F = {f^((l))}_(l=1)^L, theta = {theta^((l))}_(l=1)^L
+$
+难以直接计算，可以考虑使用 gaussian posterior approximation： #index("Gaussian Posterior Approximation")
+$
+  p(f|X,y,theta) approx q(f)
+$
+
+#pagebreak()
+#hd3("Bayesian optimization") #index("Bayesian Optimization")
+
+有些时候，我们不仅需要根据数据预计结果，还期望获得预计结果的不确定性。
+
+在回归中，我们的目标是基于来自未知函数的观察数据点对函数进行建模。传统的非线性回归方法通常给出一个被认为最适合数据集的单一函数。然而，可能存在多个函数同样适合观察到的数据点。我们观察到，当多元正态分布的维度为无限时，我们可以使用这些无限数量的函数在任何点进行预测。当我们开始有观察数据时，我们不再保留无限数量的函数，而只保留适合观察数据的函数，形成后验分布。
+当我们有新的观察数据时，我们将当前的后验作为先验，并使用新的观察数据点来获得一个新的后验。@wang2023intuitive
 
 Bayesian optimization 是一种用于优化黑盒函数的方法，即无法直接观察其函数形式，只能通过输入输出的数据点来估计其函数形式。
 
@@ -818,7 +900,7 @@ $
 $
 其中，$f(x)$ 通常是难以计算的、计算成本较高的或是无法计算导数。例如，在神经网络优化中，$x$ 通常指的是神经网络的超参数，例如学习率、网络结构等。
 
-Bayesian optimization 首先对目标函数 $f(dot)$ 进行先验假设；根据观测数据获得后验分布；根据后验分布计算采集函数 (acquisition function)，选择下一个采样点；重复上述步骤直到收敛。
+Bayesian optimization 首先对目标函数 $f(dot)$ 进行先验假设；根据观测数据获得后验分布；根据后验分布计算采集函数 (acquisition function)，选择下一个采样点；重复上述步骤直到收敛。 #index("Acquisition Function")
 
 通常来说，假设 $f(dot) tilde GP(dot|mu(x), K(x,x'))$，并利用已知形式的后验 $mu_*$ 与 $sigma_*^2$ 计算采集函数。 采集函数平衡以下两个因素：
 1. 探索（Exploration） ：在未充分了解的（方差大的）区域内尝试新的或未观察过的选项，以获取更多的信息。这种策略的目的是为了发现新的潜在的更优解。
@@ -830,13 +912,13 @@ $
 例如，直接对于 $mu_*$ 与 $sigma_*^2$ 进行平衡的 GP lower confidence bound：
 $
   alpha_("LCB")(x) = -mu_*(x) + kappa sigma_*^2(x)
-$
+$ #index("Gaussian Process Lower Confidence Bound")
 其中 $kappa$ 为超参数，LCB可以看作是 $mu_*$ 的置信区间。
 
-除此以外，我们可以使用Expected Improvement (EI) 。考虑新采样点可以提升 $f$ 表现力（即降低 $f$ 值）的概率，令 $f_("best") = min_i f_i$ 为观测值中的最小值，我们可以定义 reward function:
+除此以外，我们可以使用Expected Improvement (EI) 。考虑新采样点可以提升 $f$ 表现力（即降低 $f$ 值）的概率，令 $f_("best") = min_i f_i$ 为观测值中的最小值，我们可以定义 reward function: #index("Expected Improvement")
 $
   u(x) = max(0, f_("best") - f(x))
-$
+$ #index("Reward Function")
 因此，采集函数为：
 $
   alpha_("EI")(x) &= bb(E)[u(x)]\
@@ -853,7 +935,7 @@ $
 #pagebreak()
 #hd2("Latent variable model")
 
-#hd3("Laten variable model")
+#hd3("Laten variable model")  #index("Latent Variable Model")
 
 潜变量模型（Latent variable model）是一种统计模型，其中包含了一些未观测的变量，这些变量通常被称为潜变量（latent variable）。潜变量模型通常用于描述数据背后的潜在结构，以及数据生成的机制。潜变量模型可以用于多种任务，如聚类、降维、异常检测等。
 
@@ -869,7 +951,7 @@ $
 $
 因此，我们可以通过最大化 ELBO $cal(L)(q, theta)$ 来使 $log p(X|theta)$ 尽可能大。对于ELOB，给出其广泛定义 variational lower bound:
 
-#showybox()[
+#showybox()[  #index("Variational Lower Bound")
   函数 $g(xi, x)$ 是另一函数 $f(x)$ 的 variational lower bound，当且仅当：
 
   - $forall xi, f(x) >= g(xi, x)$
@@ -885,7 +967,7 @@ $
   $
 ]
 
-#hd3("EM Algorithm")
+#hd3("EM Algorithm")  #index("EM Algorithm")
 #hd4("EM Algorithm")
 
 在最大化 $log p(X|theta)$ 时，我们不仅要最大化参数 $theta$，还要最大化潜变量 $Z$ 的分布，即
@@ -913,7 +995,7 @@ $
     )
 )
 
-#hd4("Categorical latent variables")
+#hd4("Categorical latent variables")  #index("Categorical Latent Variables")
 
 对于离散型潜变量，假设 $z_i in {1,dots,K}$，则
 $
@@ -950,7 +1032,7 @@ $
 #hd3("VAE")
 
 #hd4("Mixture PCA")
-在线性代数下视角的PCA一般涉及特征值分解与主成分投影，对于 $n$ 个具有 $p$ 维特征的数据 $bold(X)in bb(R)^(n times p)$，将其中心化后计算协方差矩阵：
+在线性代数下视角的PCA一般涉及特征值分解与主成分投影，对于 $n$ 个具有 $p$ 维特征的数据 $bold(X)in bb(R)^(n times p)$，将其中心化后计算协方差矩阵： #index("PCA")
 $
   bold(Sigma) = 1/n bold(X)^tack.b bold(X)
 $
@@ -975,7 +1057,7 @@ $theta$作为参数，包含 $bold(V) in bb(R)^(D times d), mu, sigma in bb(R)^D
 - 可以通过确定 $p(theta)$ 自动确定 $d$ 的值，而不需要想PCA一样提前确定
 - 可扩展至混合PCA
 
-现在考虑混合PCA(Mixture PCA)，即降维后的数据存在于多个子空间中，假设 $x in bb(R)^D, t in {1, dots, K}, z in bb(R)^d$，其中 $t$ 是每个子空间的索引，则有：
+现在考虑混合PCA(Mixture PCA)，即降维后的数据存在于多个子空间中，假设 $x in bb(R)^D, t in {1, dots, K}, z in bb(R)^d$，其中 $t$ 是每个子空间的索引，则有： #index("PCA", "Mixture PCA")
 $
   p(X,Z,T|theta) &= product_i p(x_i|z_i, t_i, theta) p(z_i|theta) p(t_i|theta)\
   & = product_i cal(N)(x_i|bold(V)_(t_i)z_i+mu_(t_i), sigma^2 I) cal(N)(z_i|0, I) pi_(t_i)
@@ -1002,7 +1084,7 @@ $
 - UMAP：类似于t-SNE，但更注重全局结构的同时保持局部结构。
 - 自编码器 ：基于神经网络的方法，可以学习复杂的非线性映射，例如VAE。
 
-#hd4("VAE")
+#hd4("VAE") #index("VAE")
 
 假设 $X in bb(R)^(n times D), Z in bb(R)^(n times d)$，则 latent variable model 告诉我们：
 $
@@ -1042,7 +1124,7 @@ $
 $
 鉴于在非共轭情况下我们无法使用EM对 $q(Z|X, phi)$ 进行求解，我们因此使用 stochastic gradient 的方法
 
-#hd4("Stochastic gradient")
+#hd4("Stochastic gradient") #index("Stochastic Gradient") #index("Mini-batch")
 
 Stochastic gradient 通常使用mini-batch与Monte-Carlo estimation 来优化 ELBO，对于
 $
@@ -1080,13 +1162,13 @@ $
 $
 #set math.equation(number-align: horizon)
 
-注意到 $nabla_phi log q(z^*_i|x_i,phi)$ 为分数函数 (score function)，具有以下性质：
+注意到 $nabla_phi log q(z^*_i|x_i,phi)$ 为分数函数 (score function)，具有以下性质： #index("Score Function")
 - $
     bb(E)[nabla_theta log p(x|theta)] &= integral p(x|theta) nabla_theta log p(x|theta) d x\
     &= integral p(x|theta) 1/p(x|theta) nabla_theta p(x|theta) d x\
     &= nabla_theta integral p(x|theta) d x = 0
   $
-  考虑到 $z^*_i$ 为我们抽样与 $q(z_i|x_i,phi)$ 的样本，因此可以认为 $nabla_phi q(z^*_i|x_i,phi)$ 在 $0$ 附近震荡，且其质量严格与抽样情况相关。除非 $n$ 具有较大值，否则几乎为0，因此可以认为梯度下降时速度较慢
+  考虑到 $z^*_i$ 为我们抽样从 $q(z_i|x_i,phi)$ 的样本，因此可以认为 $nabla_phi q(z^*_i|x_i,phi)$ 在 $0$ 附近震荡，且其质量严格与抽样情况相关。除非 $n$ 具有较大值，否则几乎为0，因此可以认为梯度下降时速度较慢
 - $
     "Var"(nabla_theta log p(x|theta)) &= bb(E)[nabla_theta log p(x|theta)^2]\
     &= I(theta)
@@ -1095,7 +1177,7 @@ $
 
 综上所述 $nabla_phi log q(z^*_i|x_i,phi)$ 的存在会导致梯度下降效率降低，因此一般不这么做，而使用 reparameterization trick 来避免这个问题。
 
-#hd4("Reparameterization trick")
+#hd4("Reparameterization trick")  #index("Reparameterization Trick")
 
 考虑复杂期望的求导：
 $
@@ -1239,7 +1321,7 @@ def decode(self, z):
 #pagebreak()
 #hd3("Discrete Latent Variables")
 
-#hd4("Reinforce estimator")
+#hd4("Reinforce estimator") #index("Reinforce Estimator")
 
 在连续潜变量模型中，我们利用 reparameterization trick 对 @VAE-phi-dri 的第一项进行了求导。而对于离散潜变量模型，我们无法使用 reparameterization trick，因此我们需要使用 Reinforce estimator. 考虑：
 $
@@ -1272,7 +1354,7 @@ $
   z &= arg min_i zeta_i/pi_i, space.quad zeta_i tilde "Exp"(1)\
   &= arg max_i [log pi_i - log zeta_i]\
   &= arg max_i [log pi_i + gamma_i], space.quad gamma_i tilde "Gumbel"(0,1)
-$
+$ #index("Gumbel-Max trick")
 唯一的问题在于 $arg max(dot)$ 不可导
 #showybox()[
   proof:
@@ -1300,7 +1382,7 @@ $
     &= pi_i
   $
 ]
-因此使用 Gumbel-SoftMax trick，即使用带温度控制的 SoftMax 替代 argmax:
+因此使用 Gumbel-SoftMax trick，即使用带温度控制的 SoftMax 替代 argmax:  #index("Gumbel-SoftMax Trick")
 $
   "softmax"(x;tau)_j = (exp(x_j\/tau))/(sum_i exp(x_i\/tau))
 $
@@ -1330,7 +1412,7 @@ $
 
 对于温度 $tau$，通常使 $tau <= 1\/(K-1)$，并且使用grid search搜索。小 $tau$ 会导致高方差，但更能表示离散值；大 $tau$ 反之。
 
-#hd4("Control Variates")
+#hd4("Control Variates")  #index("Control Variates")
 
 对于 @reinforce-estimator，另一个合理的想法是控制 reinforce estimator的方差，利用 variant control，通过减去已知量的估计误差来降低未知量的估计误差. 假设对于未知随机变量 $V(X)$，以及已知随机变量 $W(X)$ 与 其计算出的期望 $mu = bb(E)[W(X)]$，我们可以构造一个新的随机变量，与 $V(X)$ 具有相同期望，但方差更小：
 $
@@ -1360,7 +1442,7 @@ $
 $
   g(z_(1:M), phi) = 1/M sum_(m=1)^M [f(z_m) - b(z_m)] nabla_phi log q(z_m;phi) +nabla_phi mu(phi)
 $
-其中 $z_i tilde q(Z;phi)$，$b(Z)$ 被称为 baseline, $b(Z) nabla_phi log q(Z;phi)$ 被称为 control variate. 接下来讨论 baseline 的选择：
+其中 $z_i tilde q(Z;phi)$，$b(Z)$ 被称为 baseline, $b(Z) nabla_phi log q(Z;phi)$ 被称为 control variate. 接下来讨论 baseline 的选择： #index("Baseline")
 
 1. 选择 baseline 为常数 $b(Z) = c$，有 $nabla_phi mu(phi)=0$，因此：
   $
@@ -1390,7 +1472,7 @@ $
 #pagebreak()
 #hd3("GAN")
 
-#hd4("GAN")
+#hd4("GAN") #index("GAN")
 GAN 的思想在于，使神经网络生成的分布 $q(x)$ 与真实分布 $p(x)$ 尽可能接近。接近程度由判别器决定：
 $
   f(x;phi) = p(y=1|x, phi)
@@ -1424,7 +1506,7 @@ $
   theta^(t+1) = theta^t + nabla_theta cal(L)(phi, theta^t)
 $
 3. 重复1,2直至收敛
-其中，$D_f$ 为 f-divergence，可以是任意的 divergence measure
+其中，$D_f$ 为 f-divergence，可以是任意的 divergence measure  #index("Divergence Mesure")
 $
   D_f (P||Q) = integral_cal(X) f (p(x)/q(x)) q(x) d x
 $
@@ -1437,7 +1519,7 @@ $
   )
 $
 
-#hd4("Optimal transport")
+#hd4("Optimal transport") #index("Optimal Transport")
 根据 @gan-binary 和 @gan-df 我们知道：最小化generator的loss等价于最小化generator生成的分布与target分布的JS divergence。
 
 但是用JS divergence来作为度量有个致命缺陷，就是在两个分布互不相交的情况下，两个分布的JS divergence永远都是常数 $log 2$，并且由于generator生成的分布和target分布的支撑集是在嵌在高维空间中的低维流形，所以他们重叠的部分的测度几乎为0。这样完全无法进行度量两个分布在不相交情况下的距离。计算梯度的时候也会出现0梯度的情况。@ymhuang2024
@@ -1474,7 +1556,7 @@ $
 $
   A := A / sigma_max
 $
-可以使用 power iteration 来计算 $sigma_max$ (#link("https://en.wikipedia.org/wiki/Power_iteration")[power iteration wiki])
+可以使用 power iteration 来计算 $sigma_max$ (#link("https://en.wikipedia.org/wiki/Power_iteration")[power iteration wiki])  #index("Power Iteration")
 
 #hd4("Gan Algorithm")
 $
@@ -1490,7 +1572,7 @@ $
 3. 重复1,2直至收敛
 
 #pagebreak()
-#hd3("Normalizing Flows")
+#hd3("Normalizing Flows") #index("Normalizing Flows")
 来源与论文@dinh2016density，与VAE类似，normalizing flows 假设潜变量 $z$，并可以根据数据 $x$ 得到潜变量，即：
 $
   z = f_theta (x)
@@ -1541,7 +1623,7 @@ $
 #pagebreak()
 #hd2("优化算法")
 
-#hd3("Conjugate gradient algorithm")
+#hd3("Conjugate gradient algorithm")  #index("Conjugate Gradient Algorithm")
 
 #text(blue)[
   link: #link("https://en.wikipedia.org/wiki/Conjugate_gradient_method")[Conjugate gradient method-Wikipedia]
@@ -1549,8 +1631,7 @@ $
 
 from: Rasmussen, C. (2006). Conjugate gradient algorithm, version 2006-09-08. available online.
 
-共轭梯度算法（Conjugate Gradient Algorithm）是一种用于求解大规模线性系统 
-$bold(A) bold(x)=bold(b)$ 的迭代方法，其中 $bold(A)$ 是一个对称正定矩阵。这个算法尤其适用于稀疏矩阵，因为它可以避免直接求解矩阵的逆，降低了计算复杂度。
+共轭梯度算法（Conjugate Gradient Algorithm）是一种用于求解大规模线性系统 $bold(A) bold(x)=bold(b)$ 的迭代方法，其中 $bold(A)$ 是一个对称正定矩阵。这个算法尤其适用于稀疏矩阵，因为它可以避免直接求解矩阵的逆，降低了计算复杂度。
 
 共轭梯度算法的基本思想是通过迭代的方法逐步逼近线性方程的解，利用前一步的解信息来加速收敛。其步骤通常如下：
 
@@ -1683,13 +1764,13 @@ $
 
 论文：@poli2023hyena
 
-#hd4("结合SSM的卷积")
+#hd4("结合SSM的卷积") #index("Convolution", "SSM Convolution")
 
 以普通的卷积为例，假设 $S in bb(R)^(L times L)$ 为filter，$U  in bb(R)^(L times C)$ 为输入，$y$ 为输出，则有：
 $
   y_t = (h * u)_t = sum_(n=0)^(L-1) h_(t-n) u_n
 $
-这里 $h in bb(R)^(L)$，为了便于SSM的加入，令filter $S$ 为 Toeplitz 矩阵，即每一个对角线上元素相同：
+这里 $h in bb(R)^(L)$，为了便于SSM的加入，令filter $S$ 为 Toeplitz 矩阵，即每一个对角线上元素相同： #index("Toeplitz Matrix")
 $
   S_(i,j) = S_(i+1, j+1)\
   S = mat(
@@ -1707,7 +1788,7 @@ $
   )
 $
 
-#hd4("FFT Conv")
+#hd4("FFT Conv")  #index("Convolution", "FFT Convolution")
 卷积操作可以利用FFT优化运行速度。卷积操作的空间复杂度为$O(L^2)$，而利用FFT可以将其降低到$O(L log L)$。具体运用了傅里叶变换的卷积性质 @FFT-conv.
 考虑filter为Toeplitz 矩阵的特殊情况，循环矩阵：
 $
@@ -1770,7 +1851,7 @@ $
 拓展到多个部分，我们令 $D_x^n = text("diag")(x^n) in bb(R)^(L times L)$，$S_h^n$ 为 Toeplitz 矩阵，来源于 filter $h^n$，则有：
 $
   y = H(u)v = D_x^N S_h^N D_x^(N-1) S_h^(N-1) dots D_x^1 S_h^1 v
-$
+$ #index("Self-attention", "Hyena Self-attention")
 
 #hd4("Hyena filter")
 Hyena filter采用FFN更新：
@@ -1832,7 +1913,7 @@ $
 
 #hd4("数学推导")
 
-#h(2em) 假设观察到数据的分布（概率密度函数pdf）为 $p_d (dot)$，考虑pdf由参数 $bold(alpha)$ 决定，因此可以认为pdf属于参数家族 ${p_m (dot;bold(alpha))}_bold(alpha)$.其中 $bold(alpha)$ 为参数向量，且存在某个 $bold(alpha)^*$ 使得 $p_d (dot) = p_m (dot;bold(alpha)^*)$。
+假设观察到数据的分布（概率密度函数pdf）为 $p_d (dot)$，考虑pdf由参数 $bold(alpha)$ 决定，因此可以认为pdf属于参数家族 ${p_m (dot;bold(alpha))}_bold(alpha)$.其中 $bold(alpha)$ 为参数向量，且存在某个 $bold(alpha)^*$ 使得 $p_d (dot) = p_m (dot;bold(alpha)^*)$。
 
 这里的问题是，如何在观察数据的基础上，通过最大化目标函数去估计参数 $bold(alpha)^*$. 我们知道的是，不管参数估计结果如何，都一定满足：
 
@@ -1917,3 +1998,8 @@ $
 
 #pagebreak()
 #bibliography("ref.bib", style: "ieee", title: "参考文献")
+
+#pagebreak()
+#columns(2)[
+    #make-index(title: [Index], outlined: true)
+]
