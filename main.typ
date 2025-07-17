@@ -1,5 +1,5 @@
-#import "@preview/drafting:0.2.0": margin-note, set-page-properties
-#import "@preview/showybox:2.0.1": showybox
+#import "@preview/drafting:0.2.2": margin-note, set-page-properties
+#import "@preview/showybox:2.0.4": showybox
 #import "@preview/lovelace:0.3.0": *
 #import "@preview/codly:1.0.0": *
 #import "@preview/in-dexter:0.7.0": *
